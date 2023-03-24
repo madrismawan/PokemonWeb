@@ -1,26 +1,29 @@
 <script lang="ts">
-	import type { fromJSON } from "postcss";
-
 	import ApiService from "../services/+api";
+	import type { PaginateMetaData, BasicResponse, Pokemon } from "../interfaces/+pokemon";
+	import InputField from "../componets/+inputField.svelte";
+	import PokeCard from "../componets/pokemon/+pokeCard.svelte";
 	import { onMount } from 'svelte';
-	import type { PokemonList, Pokemon } from "../interfaces/+pokemon";
-	import type { ApiResponse } from "../interfaces/+responseAPI"; 	
 
 	const axios = new ApiService()
-	$: pokemos = [];
 
+	let pokemons: Pokemon[]
 	async function getPokemon(){
-		const response = await axios.get('/pokemon')
-		const listPokemon: PokemonList =  response.data as PokemonList
-		const listDetailPokemon = listPokemon.results.map((pokemon: Pokemon)=> {
-			return axios.get(pokemon.url)
-		})
-
-		const responseDetail = await Promise.all(listDetailPokemon)
-		pokemos = responseDetail.map((pokemon) => {
-				return pokemon.data
-		})
-		console.log(pokemos)
+		try{
+			const response: PaginateMetaData = await axios.get('/pokemon?offset=0&limit=9')
+			const listPokemon: Promise<any>[]= response.results.map(async (pokemon: BasicResponse) => {
+				try{
+					return await axios.get('pokemon/'+pokemon.name)
+				}catch(error: any){
+					return error
+				}
+			})
+			pokemons = await Promise.all(listPokemon)
+			console.log(pokemons)
+		}catch(error: any){
+			console.log(error)
+			return error
+		}	
 	}
 
 	onMount( async () => {
@@ -29,35 +32,21 @@
 </script>
 
 <svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
+	<title>Pokedex V2 | Svelte</title>
+	<meta name="description" content="this website pokedex" />
+	<link rel="icon" type="svg" href="../svg/pokeball.svg" />
 </svelte:head>
 
-<section class="min-h-screen font-mono">
-	
+<section class="min-h-screen d-container font-montserrat">
 	<section id="title">
-		<h1 class="font-black text-xl font-mono">List Pokemon</h1>
+		<h1 class="font-bold text-3xl text-start">Svelte Pokédex</h1>
 	</section>
-
-	<section id="search-pokemon">
-		<input class="h-10 rounded-md w-full py-4 px-7" placeholder="Search Pokemon GO" />
-	</section>
-
-	<section>
-		<section class="grid grid-cols-4 gap-4">
-			{#each ['rismawna','maderisamwan'] as pokemon}
-				<div class="shadow-md p-4 bg-slate-200 rounded-md ">
-					<h1  class="capitalize font-semibold text-sm" >{pokemon}</h1>
-				</div>	
+	<InputField></InputField>
+	<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+		{#if pokemons}
+			{#each pokemons as pokemon, index}
+				<PokeCard {pokemon}></PokeCard>
 			{/each}
-		</section>
+		{/if}
 	</section>
 </section>
-
-<style>
-	section {
-		@apply mb-5;
-	}
-</style>
-
-

@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.d-container{
+    @apply px-14 md:px-24 lg:px-48 xl:px-56
+}
+
+section{
+    @apply mb-6
+}
+
+.skeleton{
+    @apply bg-gray-200 bg-opacity-95 animate-pulse
+} 
+
+.card{
+    @apply flex flex-col shadow-xl rounded-lg overflow-hidden
+}

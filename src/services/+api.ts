@@ -1,5 +1,5 @@
 import axios, {type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from 'axios';
-import type { ApiResponse } from "../interfaces/+responseAPI"; 	
+// import type { ApiResponse } from "../interfaces/+responseAPI"; 	
 
 class ApiService {
   private axiosInstance: AxiosInstance;
@@ -11,48 +11,48 @@ class ApiService {
     });
   }
 
-  private handleResponse<T>(response: AxiosResponse<T>): ApiResponse<T> {
-    const apiResponse: ApiResponse<T> = {
-      status: response.status >= 200 && response.status < 300,
-      message: response.statusText,
-      data: response.data,
-    };
-    return apiResponse;
-  }
+  // private handleResponse<T>(response: AxiosResponse<T>): ApiResponse<T> {
+  //   const apiResponse: ApiResponse<T> = {
+  //     status: response.status >= 200 && response.status < 300,
+  //     message: response.statusText,
+  //     data: response.data,
+  //   };
+  //   return apiResponse;
+  // }
 
-  public async get<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+  public async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
     try{
       const response: AxiosResponse<T> = await this.axiosInstance.get<T>(url, config);
-      return this.handleResponse(response)
+      return response.data
     }catch(error: any){
-      return this.handleResponse(error.response)
+      return error
     }
   }
 
-  public async post<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+  public async post<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<T> {
     try{
       const response: AxiosResponse<T> = await this.axiosInstance.post<T>(url, data, config)
-      return this.handleResponse(response)
+      return response.data
     }catch(error: any){
-      return this.handleResponse(error.response)
+      return error
     }
   }
 
-  public async put<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+  public async put<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<T> {
     try{
       const response: AxiosResponse<T> = await this.axiosInstance.put<T>(url, data, config)
-      return this.handleResponse(response)
+      return response.data
     }catch(error: any){
-      return this.handleResponse(error.response)
+      return error
     }
   }
 
-  public async delete<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+  public async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
     try{
       const response = await this.axiosInstance.delete<T>(url, config)
-      return this.handleResponse(response)
+      return response.data
     }catch(error: any){
-      return this.handleResponse(error.response)
+      return error
     }
   }
 
