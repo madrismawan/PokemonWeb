@@ -15,5 +15,5 @@ section{
 } 
 
 .card{
-    @apply flex flex-col shadow-xl rounded-lg overflow-hidden
+    @apply flex flex-col shadow-2xl rounded-lg overflow-hidden
 }
