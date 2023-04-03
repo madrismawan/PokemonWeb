@@ -1,4 +1,4 @@
-import type { PokemonType } from "../interfaces/pokemon";
+import type { PokemonType } from "../domain/entities/Pokemon";
 
 export const pokemonTypes: PokemonType = {
   normal: {

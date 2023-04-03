@@ -17,3 +17,7 @@ section{
 .card{
     @apply flex flex-col shadow-2xl rounded-lg overflow-hidden
 }
+
+.container-footer{
+    @apply mx-14 md:mx-24 lg:mx-48 xl:mx-56 border-t-2 border-gray-400 border-opacity-25
+}

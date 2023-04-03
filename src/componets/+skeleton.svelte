@@ -1,9 +1,13 @@
 <div class="card">
-    <div class="skeleton bg-gray-200 py-5">
-        <div class="h-[8.5rem]"></div>
+    <div class="skeleton h-[63%]">
+        <div class="h-full w-full"></div>
     </div>
-    <div class="flex flex-col p-3 space-y-2">
-        <div class="w-1/2 h-4 content-center skeleton rounded-lg" ></div>
-        <div class="w-1/2 h-4 content-center skeleton rounded-lg"> </div>
+    <div class="p-3 flex flex-col items-center space-y-2">
+        <div class="skeleton h-6 rounded-3xl w-[55%]"></div>
+        <div class="flex w-[55%] rounded-3xl space-x-2 justify-center">
+            <div class="skeleton h-5 w-[37%] rounded-3xl"></div>
+            <div class="skeleton h-5 w-[37%] rounded-3xl"></div>
+        </div>
+        <div class="skeleton h-5 w-[38%] rounded-3xl"></div>
     </div>
 </div>

@@ -1,0 +1,28 @@
+import type { BasicResponse, PokeIndex, Pokemon } from "../domain/entities/Pokemon";
+import type { PokemonRepository } from "../domain/repositories/PokemonRepository";
+import { ApiService } from "../services/apiService";
+
+const api = new ApiService()
+
+export class PokemonService implements PokemonRepository {
+  public async getPokeIndex(total: number): Promise<PokeIndex>{
+    try{
+      const response: PokeIndex = await api.get('/pokemon?offset=0&limit='+total) 
+      return response
+    }catch(error: any){
+      return error
+    }
+  }
+
+  public async getPokemons(listPokemons: BasicResponse[]): Promise<Pokemon[]> {
+    const getPokemons: Promise<any>[] = listPokemons.map(async (pokemon: BasicResponse) => {
+      return await api.get('pokemon/'+pokemon.name)
+    })
+    try{
+      const pokemons: Pokemon[] = await Promise.all(getPokemons) 
+      return pokemons;
+    }catch(error: any){
+      return error
+    }
+  }
+}

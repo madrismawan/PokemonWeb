@@ -1,11 +1,11 @@
-import type { PaginateMetaData, Pokemon } from "../../application/interfaces/pokemon";
+import type { PokeIndex, Pokemon } from "../../domain/entities/Pokemon"
 
 export interface PokemonState{
-    pokeIndex: PaginateMetaData
+    pokeIndex: PokeIndex
     pokemons: Pokemon[]
 }
 
-export const initialState: PokemonState= {
+export const initialStatePokemon: PokemonState= {
     pokeIndex: {
         count: 0,
         next: '',
