@@ -5,6 +5,8 @@
 	import { getPokeIndex, getPokemons, pokemonStore } from "../stores/pokemon/index.";
 	import Skeleton from "../componets/+skeleton.svelte";
 
+	const length: number = 9
+
 	async function getPokemon(total: number) {
 		const response = await getPokeIndex(total)
 		if(response.results.length > 0){
@@ -13,7 +15,7 @@
 	}
 
 	onMount( async () => {
-		await getPokemon(9)
+		await getPokemon(length)
 	});
 </script>
 
@@ -28,18 +30,17 @@
 		<h1 class="font-bold text-3xl text-start">Svelte Pokédex</h1>
 	</section>
 	<InputField></InputField>
+
 	<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+		{#if $pokemonStore.pokemons.length == 0}
+			<Skeleton length={length}/>
+		{/if}
 		{#if $pokemonStore.pokemons}
 			{#each $pokemonStore.pokemons as pokemon, index}
-				<PokeCard {pokemon}></PokeCard>
-				<Skeleton/>
+				<div class="animate__animated  animate__backInUp ">
+					<PokeCard {pokemon}/>
+				</div>
 			{/each}
 		{/if}
-
-
 	</section>
-
-	<!-- <button on:click={() => (showModal = true)}>
-		show modal
-	</button> -->
 </section>

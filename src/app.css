@@ -11,7 +11,7 @@ section{
 }
 
 .skeleton{
-    @apply bg-gray-200 bg-opacity-95 animate-pulse
+    @apply animate-pulse bg-gray-300 bg-opacity-95 
 } 
 
 .card{
