@@ -51,8 +51,8 @@ export function imagePokemon(id: number): string{
 } 
 
 
-export function colorPokemon(type: string): string{
-  return pokemonTypes[type].medium+"d4"
+export function colorPokemon(type: string, opacity: string): string{
+  return pokemonTypes[type].medium+opacity
 }
 
 export function iconPokemon(type: string): string{

@@ -2,15 +2,15 @@
 	import InputField from "../componets/+inputField.svelte";
 	import PokeCard from "../componets/pokemon/+pokeCard.svelte";
 	import { onMount } from 'svelte';
-	import { getPokeIndex, getPokemons, pokemonStore } from "../stores/pokemon/index.";
 	import Skeleton from "../componets/+skeleton.svelte";
+	import pokemon, { state } from "../stores/moduls/pokemon";
 
 	const length: number = 9
 
 	async function getPokemon(total: number) {
-		const response = await getPokeIndex(total)
+		const response = await pokemon.actions.getPokeIndex(total)
 		if(response.results.length > 0){
-			await getPokemons(response.results)	
+			await pokemon.actions.getPokemons(response.results)	
 		}
 	}
 
@@ -32,11 +32,11 @@
 	<InputField></InputField>
 
 	<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-		{#if $pokemonStore.pokemons.length == 0}
+		{#if $state.pokemons.length == 0}
 			<Skeleton length={length}/>
 		{/if}
-		{#if $pokemonStore.pokemons}
-			{#each $pokemonStore.pokemons as pokemon, index}
+		{#if $state.pokemons.length}
+			{#each $state.pokemons as pokemon, index}
 				<div class="animate__animated  animate__backInUp ">
 					<PokeCard {pokemon}/>
 				</div>

@@ -25,4 +25,11 @@ export class PokemonService implements PokemonRepository {
       return error
     }
   }
+
+  public async getSpeciesPokemon(){
+    try{
+    }catch(error: any){
+    }
+  }
+
 }
