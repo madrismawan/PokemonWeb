@@ -17,10 +17,24 @@
         showModal = true
         document.body.style.overflow = 'hidden';
     }
+	let dialog: HTMLDialogElement; // HTMLDialogElement
+    $: if (dialog && showModal){
+        console.log(dialog)
+        dialog.showModal();
+    }  
+
 </script>
 
 {#if showModal}
-    <Modal bind:showModal {pokemon}/>
+
+    <dialog 
+        class="bg-white outline-white animate__animated"
+        bind:this={dialog}
+        >
+        <div>Made Rismawan</div>
+
+    </dialog>
+    <!-- <Modal bind:showModal {pokemon}/> -->
 {/if}
 
 <div class="transition card hover:-translate-y-1 hover:scale-105 hover:cursor-pointer" on:click={openModal} on:keydown={(event) => handleKeyDown(event,openModal)}>
