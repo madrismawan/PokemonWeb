@@ -27,7 +27,7 @@
 
 <section class="min-h-screen d-container font-montserrat">
 	<section id="title">
-		<h1 class="font-bold text-3xl text-start">Svelte Pokédex</h1>
+		<h1 class="font-bold text-3xl text-start">Svelte Pokédex</h1> 
 	</section>
 	<InputField></InputField>
 
@@ -35,7 +35,7 @@
 		{#if $state.pokemons.length == 0}
 			<Skeleton length={length}/>
 		{/if}
-		{#if $state.pokemons.length}
+		{#if $state.pokemons.length > 0}
 			{#each $state.pokemons as pokemon, index}
 				<div class="animate__animated  animate__backInUp ">
 					<PokeCard {pokemon}/>
