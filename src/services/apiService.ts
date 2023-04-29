@@ -1,24 +1,20 @@
 import axios, {type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from 'axios';
-// import type { ApiResponse } from "../interfaces/+responseAPI"; 	
+import type { HttpService } from "./httpService";
 
-class ApiService {
+
+export class ApiService implements HttpService {
   private axiosInstance: AxiosInstance;
   private $env = import.meta.env 
 
   constructor() {
     this.axiosInstance = axios.create({
-      baseURL: this.$env.VITE_BASE_URL
+      baseURL: this.$env.VITE_BASE_URL,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': "application/json"
+      }
     });
   }
-
-  // private handleResponse<T>(response: AxiosResponse<T>): ApiResponse<T> {
-  //   const apiResponse: ApiResponse<T> = {
-  //     status: response.status >= 200 && response.status < 300,
-  //     message: response.statusText,
-  //     data: response.data,
-  //   };
-  //   return apiResponse;
-  // }
 
   public async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
     try{
@@ -55,7 +51,4 @@ class ApiService {
       return error
     }
   }
-
 }
-
-export default ApiService;

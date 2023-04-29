@@ -1,50 +1,51 @@
 
 <script lang="ts">
-	import type { Pokemon, PokeTypeDetail } from "../../application/interfaces/pokemon";
-	import { leftPadNumber } from "../../application/services/leftPadNumber";
-	import { pokemonTypes } from "../../application/services/pokemonType";
+	import { changeMeasurement, colorPokemon, iconPokemon, imagePokemon, type Pokemon } from "../../domain/entities/Pokemon";
+	import { leftPadNumber } from "../../lib/leftPadNumber";
     import WeightIcon from '../../svg/icon/weight.svg'
     import MeasureIcon from '../../svg/icon/measure.svg'
+	import Modal from "./+modal.svelte";
     export let pokemon: Pokemon;
-
-    function pokemonType(type: string): PokeTypeDetail{
-        return pokemonTypes[type]
-    }
+    let showModal: boolean = false
 
     function handleKeyDown(event: KeyboardEvent, func: () => void) {
         if (event.key === 'Enter' || event.key === ' ') {
             func();
-        }
+        } 
+    } 
+    function openModal(){
+        showModal = true
+        document.body.style.overflow = 'hidden';
     }
-    function testing(){
-        console.log('Made Risamwan')
-    }
-
 </script>
 
-<div class="transition card hover:-translate-y-1 hover:scale-105" on:click={testing} on:keydown={(event) => handleKeyDown(event,testing)}>
-    <div class="relative flex justify-center h-[70%] bg-opacity-10 -z-20 " style={`background-color: ${pokemonType(pokemon.types[0].type.name).medium}d3;`}>
-        <p class=" absolute text-6xl font-[550] -z-10 opacity-30 text-space-4 tracking-[0.3rem] text-black top-4">{leftPadNumber(pokemon.id,3)}</p>
-        <div class="absolute bg-gray-300 h-[9rem] w-[9rem] rounded-full opacity-50 -z-10 bottom-5"></div>
-        <img alt="icon" class="flex w-[13.5rem] h-full px-2 pt-8 pb-4" src={pokemon.sprites.other.dream_world.front_default}/>
+{#if showModal}
+    <Modal bind:showModal {pokemon}/>
+{/if}
+
+<div class="transition card hover:-translate-y-1 hover:scale-105 hover:cursor-pointer" on:click={openModal} on:keydown={(event) => handleKeyDown(event,openModal)}>
+    <div class="relative flex justify-center h-[70%] bg-opacity-10 -z-20 " style={`background-color: ${colorPokemon(pokemon.types[0].type.name,"d4")};`}>
+        <p class="absolute text-6xl font-[550] -z-10 opacity-20 text-space-4 tracking-[0.5rem] text-black top-4">{leftPadNumber(pokemon.id,3)}</p>
+        <div class="absolute bg-gray-200 h-[7rem] w-[7rem] rounded-full opacity-40 -z-10 bottom-5"></div>
+        <img alt="icon" class="flex w-[10rem] sm:-[11.5rem] h-full px-2 pt-8 pb-4" src={imagePokemon(pokemon.id)}/>
     </div>
-    <div class="p-3 text-center space-y-3">
+    <div class="p-3 text-center space-y-1">
         <h1 class="capitalize font-bold text-3xl">{pokemon.name}</h1>
-        <div class="flex space-x-5 font-semibold justify-center items-center">
+        <div class="flex space-x-4 font-semibold justify-center items-center text-sm pb-1">
             <div class="flex space-x-1">
-                <img class="fill-slate-500" alt="weight" src={WeightIcon}>
-                <span>{pokemon.height / 10} Kg</span>
+                <img class="fill-slate-500 w-4" alt="weight" src={WeightIcon}>
+                <span>{changeMeasurement(pokemon.height)} Kg</span>
             </div>
             <div class="flex space-x-1">
-                <img class="fill-slate-500" alt="Measure" src={MeasureIcon}>
-                <span>{pokemon.weight / 10} m</span>
+                <img class="fill-slate-500 w-4" alt="Measure" src={MeasureIcon}>
+                <span>{changeMeasurement(pokemon.weight)} m</span>
             </div>
         </div>
-        <div class="flex space-x-2 justify-center pb-3">
+        <div class="flex space-x-1 justify-center pb-3 text-xs">
             {#each pokemon.types as type}
-                <div class="flex space-x-2 rounded-2xl shadow-md py-1 px-2" style={`background-color: ${pokemonType(type.type.name).light};`}>
-                    {@html pokemonType(type.type.name).icon}
-                    <p class="uppercase text-xs font-normal text-white tracking-[0.2rem]"> {type.type.name}</p>
+                <div class="flex space-x-2 rounded-md shadow-md py-1 px-2 items-center" style={`background-color: ${colorPokemon(type.type.name,"d2")};`}>
+                    {@html iconPokemon(type.type.name)}
+                    <p class="uppercase text-xs font-normal text-white tracking-[0.1rem]"> {type.type.name}</p>
                 </div>	
             {/each}
         </div>

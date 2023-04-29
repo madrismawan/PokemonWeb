@@ -1,12 +1,21 @@
 <script lang="ts">
 	import InputField from "../componets/+inputField.svelte";
 	import PokeCard from "../componets/pokemon/+pokeCard.svelte";
-	import { getPokeIndex, getPokemons, pokemonStore } from "../stores/pokemon";
 	import { onMount } from 'svelte';
+	import Skeleton from "../componets/+skeleton.svelte";
+	import pokemon, { state } from "../stores/moduls/pokemon";
+
+	const length: number = 9
+
+	async function getPokemon(total: number) {
+		const response = await pokemon.actions.getPokeIndex(total)
+		if(response.results.length > 0){
+			await pokemon.actions.getPokemons(response.results)	
+		}
+	}
 
 	onMount( async () => {
-		await getPokeIndex(9)
-		await getPokemons($pokemonStore.pokeIndex.results)	
+		await getPokemon(length)
 	});
 </script>
 
@@ -21,10 +30,16 @@
 		<h1 class="font-bold text-3xl text-start">Svelte Pokédex</h1>
 	</section>
 	<InputField></InputField>
+
 	<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-		{#if $pokemonStore.pokemons}
-			{#each $pokemonStore.pokemons as pokemon, index}
-				<PokeCard {pokemon}></PokeCard>
+		{#if $state.pokemons.length == 0}
+			<Skeleton length={length}/>
+		{/if}
+		{#if $state.pokemons.length}
+			{#each $state.pokemons as pokemon, index}
+				<div class="animate__animated  animate__backInUp ">
+					<PokeCard {pokemon}/>
+				</div>
 			{/each}
 		{/if}
 	</section>
