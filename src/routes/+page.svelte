@@ -1,22 +1,20 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import InputField from "../componets/+inputField.svelte";
 	import PokeCard from "../componets/pokemon/+pokeCard.svelte";
-	import { onMount } from 'svelte';
 	import Skeleton from "../componets/+skeleton.svelte";
 	import pokemon, { state } from "../stores/moduls/pokemon";
-
-	const length: number = 9
-
-	async function getPokemon(total: number) {
-		const response = await pokemon.actions.getPokeIndex(total)
-		if(response.results.length > 0){
-			await pokemon.actions.getPokemons(response.results)	
-		}
-	}
+	import InfiniteScroll from '../componets/infiniteScroll.svelte';
+	let hasMore: boolean;
 
 	onMount( async () => {
-		await getPokemon(length)
+		await pokemon.actions.getPokemons()
 	});
+
+	$: {
+		hasMore = $state.loadData == 0 ? false : true
+	}
+
 </script>
 
 <svelte:head>
@@ -32,15 +30,18 @@
 	<InputField></InputField>
 
 	<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-		{#if $state.pokemons.length == 0}
-			<Skeleton length={length}/>
-		{/if}
-		{#if $state.pokemons.length > 0}
-			{#each $state.pokemons as pokemon, index}
-				<div class="animate__animated  animate__backInUp ">
+		{#if $state.pokemons.length !== 0}
+			{#each $state.pokemons as pokemon}
+				<div class="animate__animated animate__fadeIn">
 					<PokeCard {pokemon}/>
 				</div>
 			{/each}
 		{/if}
+		<Skeleton length={$state.loadData}/>
+		<InfiniteScroll
+			hasMore={hasMore}
+			threshold={100}
+			on:loadMore={() => { pokemon.actions.getPokemons()}} />
+
 	</section>
 </section>

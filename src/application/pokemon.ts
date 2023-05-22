@@ -5,9 +5,9 @@ import { ApiService } from "../services/apiService";
 const api = new ApiService()
 
 export class PokemonService implements PokemonRepository {
-  public async getPokeIndex(total: number): Promise<PokeIndex>{
+  public async getPokeIndex(offset:number,total: number): Promise<PokeIndex>{
     try{
-      const response: PokeIndex = await api.get('/pokemon?offset=0&limit='+total) 
+      const response: PokeIndex = await api.get(`/pokemon?offset=${offset}&limit=${total}`) 
       return response
     }catch(error: any){
       return error
@@ -23,12 +23,6 @@ export class PokemonService implements PokemonRepository {
       return pokemons;
     }catch(error: any){
       return error
-    }
-  }
-
-  public async getSpeciesPokemon(){
-    try{
-    }catch(error: any){
     }
   }
 
