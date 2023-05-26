@@ -37,7 +37,7 @@
     <!-- <Modal bind:showModal {pokemon}/> -->
 {/if}
 
-<div class="transition card hover:-translate-y-1 hover:scale-105 hover:cursor-pointer" on:click={openModal} on:keydown={(event) => handleKeyDown(event,openModal)}>
+<div class="transition card hover:-translate-y-1 hover:scale-105 hover:cursor-pointer">
     <div class="relative flex justify-center h-[70%] bg-opacity-10 -z-20 " style={`background-color: ${colorPokemon(pokemon.types[0].type.name,"d4")};`}>
         <p class="absolute text-6xl font-[550] -z-10 opacity-20 text-space-4 tracking-[0.5rem] text-black top-4">{leftPadNumber(pokemon.id,3)}</p>
         <div class="absolute bg-gray-200 h-[7rem] w-[7rem] rounded-full opacity-40 -z-10 bottom-5"></div>

@@ -1,19 +1,28 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, afterUpdate } from 'svelte';
 	import InputField from "../componets/+inputField.svelte";
 	import PokeCard from "../componets/pokemon/+pokeCard.svelte";
 	import Skeleton from "../componets/+skeleton.svelte";
 	import pokemon, { state } from "../stores/moduls/pokemon";
-	import InfiniteScroll from '../componets/infiniteScroll.svelte';
-	let hasMore: boolean;
+	
+	function handleScroll() {
+		const isAtBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight;
+		if (isAtBottom && $state.loadData == 0) {
+			pokemon.actions.getPokemons();
+		}
+	}
 
 	onMount( async () => {
 		await pokemon.actions.getPokemons()
+		window.addEventListener('scroll', handleScroll);
 	});
 
-	$: {
-		hasMore = $state.loadData == 0 ? false : true
-	}
+	afterUpdate(() => {
+		if (!$state.hasMore) {
+			window.removeEventListener('scroll', handleScroll);
+		}
+	});
+
 
 </script>
 
@@ -38,10 +47,5 @@
 			{/each}
 		{/if}
 		<Skeleton length={$state.loadData}/>
-		<InfiniteScroll
-			hasMore={hasMore}
-			threshold={100}
-			on:loadMore={() => { pokemon.actions.getPokemons()}} />
-
 	</section>
 </section>

@@ -7,12 +7,14 @@ interface PokemonState{
     length: number,
     offset: number,
     loadData: number,
+    hasMore: boolean,
     pokemons: Pokemon[]
 }
 
 const initialState: PokemonState= {
     length: 9,
     offset: 0,
+    hasMore: true,
     loadData: 0,
     pokemons: [],
 }
@@ -29,9 +31,10 @@ export const actions = {
         const offset = statePokemon.pokemons.length == 0 ? 0 : statePokemon.offset +  statePokemon.length 
         const resPokeIndex = await pokeService.getPokeIndex(offset,statePokemon.length)
         const resPokemons = await pokeService.getPokemons(resPokeIndex.results);
+        const hasMore: boolean = resPokemons.length > 0 ? true : false
 
         state.update(obj => {
-            return {...obj, offset: offset, loadData: resPokemons.length}
+            return {...obj, offset: offset, loadData: resPokemons.length, hasMore: hasMore}
         })
 
         resPokemons.forEach((pokemon, index) => {
@@ -40,6 +43,7 @@ export const actions = {
                     const pokemons = obj.pokemons
                     pokemons.push(pokemon)
                     return {...obj, pokemons: pokemons, loadData: obj.loadData - 1}
+
                 })
             }, 800 * index);
         })
