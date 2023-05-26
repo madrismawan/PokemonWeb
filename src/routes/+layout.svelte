@@ -26,7 +26,7 @@
 {:else}
 	<div class="app scroll-smooth">
 		<Header></Header>
-		<main class="pb-4">
+		<main class="pb-4 overflow-auto">
 			<slot />
 		</main>
 		<Footer/>
