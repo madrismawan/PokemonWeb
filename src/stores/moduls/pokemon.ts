@@ -1,6 +1,6 @@
 import { writable } from "svelte/store"
 import { PokemonService } from "../../application/pokemon"
-import type { Pokemon } from "../../domain/entities/Pokemon"
+import type { Pokemon, PokemonSpecies } from "../../domain/entities/Pokemon"
 
 const pokeService = new PokemonService()
 interface PokemonState{
@@ -9,6 +9,16 @@ interface PokemonState{
     loadData: number,
     hasMore: boolean,
     pokemons: Pokemon[]
+}
+
+interface PokemonSpeciesState{
+    load: boolean,
+    pokemonSpecies: PokemonSpecies | null
+}
+
+const pokemonSpecies: PokemonSpeciesState = {
+    load: false,
+    pokemonSpecies: null
 }
 
 const initialState: PokemonState= {
@@ -20,16 +30,17 @@ const initialState: PokemonState= {
 }
 
 export const state =  writable(initialState) 
+export const statePokeSpecies =  writable(pokemonSpecies) 
 
 export const actions = {
     getPokemons:async () => {
-        let statePokemon: PokemonState = initialState;
+        let initState: PokemonState = initialState;
         const unsubscribe = state.subscribe(value => {
-            statePokemon = value;
+            initState = value;
         });
 
-        const offset = statePokemon.pokemons.length == 0 ? 0 : statePokemon.offset +  statePokemon.length 
-        const resPokeIndex = await pokeService.getPokeIndex(offset,statePokemon.length)
+        const offset = initState.pokemons.length == 0 ? 0 : initState.offset +  initState.length 
+        const resPokeIndex = await pokeService.getPokeIndex(offset,initState.length)
         const resPokemons = await pokeService.getPokemons(resPokeIndex.results);
         const hasMore: boolean = resPokemons.length > 0 ? true : false
 
@@ -37,15 +48,32 @@ export const actions = {
             return {...obj, offset: offset, loadData: resPokemons.length, hasMore: hasMore}
         })
 
+        // Make this components to load data delay
         resPokemons.forEach((pokemon, index) => {
             setTimeout(() => {
                 state.update(obj => {
                     const pokemons = obj.pokemons
-                    pokemons.push(pokemon)
+                    if(!pokemons.some((arrPokemon) => arrPokemon.id === pokemon.id )){
+                        pokemons.push(pokemon)
+                    }                    
                     return {...obj, pokemons: pokemons, loadData: obj.loadData - 1}
 
                 })
-            }, 800 * index);
+            }, 750 * index);
+        })
+        unsubscribe()
+    },
+    getPokemonSpecies: async (id: number) => {
+        let initState: PokemonSpeciesState = pokemonSpecies;
+        const unsubscribe = statePokeSpecies.subscribe(value => {
+            initState = value;
+        });
+        statePokeSpecies.update(obj => {
+            return {...obj, load: true}
+        })
+        const resPokemonSpecies = await pokeService.getPokeSpecies(id);
+        statePokeSpecies.update(obj => {
+            return {pokemonSpecies: resPokemonSpecies, load: false}
         })
         unsubscribe()
     }
@@ -53,5 +81,6 @@ export const actions = {
 
 export default {
     state,
+    statePokeSpecies,
     actions
 }

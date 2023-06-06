@@ -2,9 +2,7 @@
 <script lang="ts">
 	import { changeMeasurement, colorPokemon, iconPokemon, imagePokemon, type Pokemon } from "../../domain/entities/Pokemon";
 	import { leftPadNumber } from "../../lib/leftPadNumber";
-    import WeightIcon from '../../svg/icon/weight.svg'
-    import MeasureIcon from '../../svg/icon/measure.svg'
-	import Modal from "./+modal.svelte";
+	import Modal from "./modal.svelte";
     export let pokemon: Pokemon;
     let showModal: boolean = false
 
@@ -13,31 +11,19 @@
             func();
         } 
     } 
+
     function openModal(){
         showModal = true
         document.body.style.overflow = 'hidden';
     }
 	let dialog: HTMLDialogElement; // HTMLDialogElement
     $: if (dialog && showModal){
-        console.log(dialog)
         dialog.showModal();
     }  
 
 </script>
 
-{#if showModal}
-
-    <dialog 
-        class="bg-white outline-white animate__animated"
-        bind:this={dialog}
-        >
-        <div>Made Rismawan</div>
-
-    </dialog>
-    <!-- <Modal bind:showModal {pokemon}/> -->
-{/if}
-
-<div class="transition card hover:-translate-y-1 hover:scale-105 hover:cursor-pointer">
+<div class="transition card hover:-translate-y-1 hover:scale-105 hover:cursor-pointer" on:click={openModal} on:keydown={(event) => handleKeyDown(event,openModal)}>
     <div class="relative flex justify-center h-[70%] bg-opacity-10 -z-20 " style={`background-color: ${colorPokemon(pokemon.types[0].type.name,"d4")};`}>
         <p class="absolute text-6xl font-[550] -z-10 opacity-20 text-space-4 tracking-[0.5rem] text-black top-4">{leftPadNumber(pokemon.id,3)}</p>
         <div class="absolute bg-gray-200 h-[7rem] w-[7rem] rounded-full opacity-40 -z-10 bottom-5"></div>
@@ -47,11 +33,11 @@
         <h1 class="capitalize font-bold text-3xl">{pokemon.name}</h1>
         <div class="flex space-x-4 font-semibold justify-center items-center text-sm pb-1">
             <div class="flex space-x-1">
-                <img class="fill-slate-500 w-4" alt="weight" src={WeightIcon}>
+                <img class="fill-slate-500 w-4" alt="weight" src="/assets/svg/icon/weight.svg">
                 <span>{changeMeasurement(pokemon.height)} Kg</span>
             </div>
             <div class="flex space-x-1">
-                <img class="fill-slate-500 w-4" alt="Measure" src={MeasureIcon}>
+                <img class="fill-slate-500 w-4" alt="Measure" src="/assets/svg/icon/measure.svg">
                 <span>{changeMeasurement(pokemon.weight)} m</span>
             </div>
         </div>
@@ -65,3 +51,7 @@
         </div>
     </div>
 </div>
+
+{#if showModal}
+    <Modal bind:showModal {pokemon}/>
+{/if}

@@ -5,7 +5,6 @@
 	import Header from '../layouts/+header.svelte';
 	import Footer from '../layouts/+footer.svelte';
 	import { onMount } from 'svelte';
-    import Pokeball from '../svg/pokeball.svg'
 
 	let loadScreen: boolean = true 
 
@@ -20,7 +19,7 @@
 {#if loadScreen}
 	<div class="min-h-screen w-full bg-red-500 ">
 		<div class="w-full h-screen flex items-center justify-center">
-			<img class="w-[20%] md:w-[5%]  animate-spin" src={Pokeball} alt="icon pokeball">
+			<img class="w-[20%] md:w-[5%]  animate-spin" src="/assets/svg/pokeball.svg" alt="icon pokeball">
 		</div>	
 	</div>
 {:else}

@@ -1,4 +1,4 @@
-import type { BasicResponse, PokeIndex, Pokemon } from "../domain/entities/Pokemon";
+import type { BasicResponse, PokeIndex, Pokemon, PokemonSpecies } from "../domain/entities/Pokemon";
 import type { PokemonRepository } from "../domain/repositories/PokemonRepository";
 import { ApiService } from "../services/apiService";
 
@@ -26,4 +26,12 @@ export class PokemonService implements PokemonRepository {
     }
   }
 
+  public async getPokeSpecies(id: number): Promise<PokemonSpecies> {
+    try{
+      const pokemonSpeceis: PokemonSpecies = await api.get(`pokemon-species/${id}`) 
+      return pokemonSpeceis;
+    }catch(error: any){
+      return error
+    }
+  }
 }
