@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { socialMedia } from '$lib/socialMedia';
-	import SocialMedia from '../componets/+socialMedia.svelte';
+	import SocialMedia from '../componets/socialMedia.svelte';
 </script>
 
 <footer class="container-footer font-montserrat mb-4 justify-between text-sm space-y-3 sm:flex py-3">

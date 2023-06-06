@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { onMount, afterUpdate } from 'svelte';
-	import InputField from "../componets/+inputField.svelte";
-	import PokeCard from "../componets/pokemon/+pokeCard.svelte";
-	import Skeleton from "../componets/+skeleton.svelte";
+	import InputField from "../componets/inputField.svelte";
+	import PokeCard from "../componets/pokemon/pokeCard.svelte";
+	import Skeleton from "../componets/skeleton.svelte";
 	import pokemon, { state } from "../stores/moduls/pokemon";
 	
 	function handleScroll() {
 		const isAtBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight;
-		if (isAtBottom && $state.loadData == 0) {
+		if (isAtBottom && $state.loadData === 0) {
 			pokemon.actions.getPokemons();
 		}
 	}
@@ -22,14 +22,12 @@
 			window.removeEventListener('scroll', handleScroll);
 		}
 	});
-
-
 </script>
 
 <svelte:head>
 	<title>Pokedex V2 | Svelte</title>
 	<meta name="description" content="this website pokedex" />
-	<link rel="icon" type="svg" href="../svg/pokeball.svg" />
+	<!-- <link rel="icon" type="svg" href="../svg/pokeball.svg" /> -->
 </svelte:head>
 
 <section class="min-h-screen d-container font-montserrat">
@@ -46,6 +44,8 @@
 				</div>
 			{/each}
 		{/if}
-		<Skeleton length={$state.loadData}/>
+		{#if $state.loadData > 0}				
+			<Skeleton length={$state.loadData}/>
+		{/if}
 	</section>
 </section>
