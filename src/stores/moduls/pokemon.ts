@@ -17,6 +17,8 @@ export const actions = {
 
         const offset = initState.pokemons.length == 0 ? 0 : initState.offset +  initState.length 
         const resPokeIndex = await pokeService.getPokeIndex(offset,initState.length)
+        const offset = initState.pokemons.length == 0 ? 0 : initState.offset +  initState.length 
+        const resPokeIndex = await pokeService.getPokeIndex(offset,initState.length)
         const resPokemons = await pokeService.getPokemons(resPokeIndex.results);
         const hasMore: boolean = resPokemons.length > 0 ? true : false
 
@@ -78,6 +80,9 @@ export const actions = {
             setTimeout(() => {
                 statePokeIndex.update(obj => {
                     const pokemons = obj.pokemons
+                    if(!pokemons.some((arrPokemon) => arrPokemon.id === pokemon.id )){
+                        pokemons.push(pokemon)
+                    }                    
                     if(!pokemons.some((arrPokemon) => arrPokemon.id === pokemon.id )){
                         pokemons.push(pokemon)
                     }                    
