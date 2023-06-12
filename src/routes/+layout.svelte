@@ -5,18 +5,15 @@
 	import Header from '../layouts/+header.svelte';
 	import Footer from '../layouts/+footer.svelte';
 	import { onMount } from 'svelte';
-
-	let loadScreen: boolean = true 
+	import pokemon, { statePokeList } from "../stores/moduls/pokemon";
 
 	onMount( async () => {
-		setTimeout(()=> {
-			loadScreen = false
-		}, 1000)
+		await pokemon.actions.getPokemonList();
 	});
 </script>
 
 
-{#if loadScreen}
+{#if !$statePokeList.load}
 	<div class="min-h-screen w-full bg-red-500 ">
 		<div class="w-full h-screen flex items-center justify-center">
 			<img class="w-[20%] md:w-[5%]  animate-spin" src="/assets/svg/pokeball.svg" alt="icon pokeball">

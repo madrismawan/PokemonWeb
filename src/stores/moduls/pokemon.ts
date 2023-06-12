@@ -1,41 +1,17 @@
 import { writable } from "svelte/store"
 import { PokemonService } from "../../application/pokemon"
-import type { Pokemon, PokemonSpecies } from "../../domain/entities/Pokemon"
+import { pokemonSpecies, pokemonIndex , pokemonList, type PokemonState, type PokemonListState} from '../models/Pokemon'
 
 const pokeService = new PokemonService()
-interface PokemonState{
-    length: number,
-    offset: number,
-    loadData: number,
-    hasMore: boolean,
-    pokemons: Pokemon[]
-}
 
-interface PokemonSpeciesState{
-    load: boolean,
-    pokemonSpecies: PokemonSpecies | null
-}
-
-const pokemonSpecies: PokemonSpeciesState = {
-    load: false,
-    pokemonSpecies: null
-}
-
-const initialState: PokemonState= {
-    length: 9,
-    offset: 0,
-    hasMore: true,
-    loadData: 0,
-    pokemons: [],
-}
-
-export const state =  writable(initialState) 
+export const statePokeIndex =  writable(pokemonIndex) 
 export const statePokeSpecies =  writable(pokemonSpecies) 
+export const statePokeList =  writable(pokemonList) 
 
 export const actions = {
     getPokemons:async () => {
-        let initState: PokemonState = initialState;
-        const unsubscribe = state.subscribe(value => {
+        let initState: PokemonState = pokemonIndex;
+        const unsubscribe = statePokeIndex.subscribe(value => {
             initState = value;
         });
 
@@ -44,14 +20,14 @@ export const actions = {
         const resPokemons = await pokeService.getPokemons(resPokeIndex.results);
         const hasMore: boolean = resPokemons.length > 0 ? true : false
 
-        state.update(obj => {
+        statePokeIndex.update(obj => {
             return {...obj, offset: offset, loadData: resPokemons.length, hasMore: hasMore}
         })
 
         // Make this components to load data delay
         resPokemons.forEach((pokemon, index) => {
             setTimeout(() => {
-                state.update(obj => {
+                statePokeIndex.update(obj => {
                     const pokemons = obj.pokemons
                     if(!pokemons.some((arrPokemon) => arrPokemon.id === pokemon.id )){
                         pokemons.push(pokemon)
@@ -64,23 +40,59 @@ export const actions = {
         unsubscribe()
     },
     getPokemonSpecies: async (id: number) => {
-        let initState: PokemonSpeciesState = pokemonSpecies;
-        const unsubscribe = statePokeSpecies.subscribe(value => {
-            initState = value;
-        });
         statePokeSpecies.update(obj => {
             return {...obj, load: true}
         })
         const resPokemonSpecies = await pokeService.getPokeSpecies(id);
-        statePokeSpecies.update(obj => {
+        statePokeSpecies.update(()=> {
             return {pokemonSpecies: resPokemonSpecies, load: false}
+        })
+    },
+    getPokemonList: async () => {
+        statePokeList.update(obj => {
+            return {...obj, load: true}
+        })
+        const resPokeList = await pokeService.getListPokemon();
+        statePokeList.update(() => {
+            return {listPokemon: resPokeList, load: true}
+        })
+
+    },
+    searchPokemon:async (keyword:string) => {
+        let initState: PokemonListState = pokemonList;
+        const unsubscribe = statePokeList.subscribe(value => {
+            initState = value;
+        });
+        
+        const found = initState.listPokemon.filter(pokemon => 
+            Object.values(pokemon).some(value => 
+                typeof value === 'string' && value.includes(keyword)
+            )   
+        )
+        statePokeIndex.update(obj => {
+            return {...obj, pokemons: [], loadData: found.length, hasMore: false}
+        })
+
+        const resPokemons = await pokeService.getPokemons(found);
+        resPokemons.forEach((pokemon, index) => {
+            setTimeout(() => {
+                statePokeIndex.update(obj => {
+                    const pokemons = obj.pokemons
+                    if(!pokemons.some((arrPokemon) => arrPokemon.id === pokemon.id )){
+                        pokemons.push(pokemon)
+                    }                    
+                    return {...obj, pokemons: pokemons, loadData: obj.loadData - 1}
+
+                })
+            }, 750 * index);
         })
         unsubscribe()
     }
 }
 
 export default {
-    state,
+    statePokeIndex,
     statePokeSpecies,
+    statePokeList,
     actions
 }
