@@ -17,8 +17,6 @@ export const actions = {
 
         const offset = initState.pokemons.length == 0 ? 0 : initState.offset +  initState.length 
         const resPokeIndex = await pokeService.getPokeIndex(offset,initState.length)
-        const offset = initState.pokemons.length == 0 ? 0 : initState.offset +  initState.length 
-        const resPokeIndex = await pokeService.getPokeIndex(offset,initState.length)
         const resPokemons = await pokeService.getPokemons(resPokeIndex.results);
         const hasMore: boolean = resPokemons.length > 0 ? true : false
 
